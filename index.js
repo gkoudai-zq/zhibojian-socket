@@ -9,7 +9,6 @@ function handler(req, res) {
   });
   req.addListener("end", function () {
     var data = JSON.parse(postData);
-    console.log(data);
     io.of('/' + data.topic).emit('news', data.msg);
     res.writeHead(200, {
       "Content-Type": "application/json;charset=utf-8"
