@@ -8,16 +8,23 @@ function handler(req, res) {
     postData += postDataChunk;
   });
   req.addListener("end", function () {
-    var data = JSON.parse(postData);
-    io.of('/' + data.topic).emit('news', data.msg);
-    res.writeHead(200, {
-      "Content-Type": "application/json;charset=utf-8"
-    });
-    res.end(JSON.stringify({ status: 'OK' }));
+    try {
+      var data = JSON.parse(postData);
+      io.of('/' + data.topic).emit('news', data.msg);
+      res.writeHead(200, {
+        "Content-Type": "application/json;charset=utf-8"
+      });
+      res.end(JSON.stringify({ status: 'OK' }));
+    } catch (e) {
+      res.writeHead(400, {
+        "Content-Type": "text/plain;charset=utf-8"
+      });
+      res.end(e.message);
+    }
   });
 }
 
 var i = 1;
-for (; i <= 30; i++) {
+for (; i <= 20; i++) {
   io.of('/' + i);
 }
